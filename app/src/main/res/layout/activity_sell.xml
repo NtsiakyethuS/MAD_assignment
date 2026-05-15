@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sell_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/sellTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sell Your Textbook"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/sellTitle"
+        app:layout_constraintBottom_toTopOf="@id/btnPostBook">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Book Picture Upload -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Book Picture"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bookImageCard"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/bookImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/picture1"
+                    android:contentDescription="Book Picture" />
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnUploadBookPicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload Picture"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Book Details -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Book Title" />
+
+            <EditText
+                android:id="@+id/sellBookTitle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/hover_background"
+                android:hint="e.g. Kotlin in Action"
+                android:inputType="text"
+                android:padding="8dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Author(s)" />
+            <EditText
+                android:id="@+id/sellBookAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="e.g. Dmitry Jemerov"
+                android:inputType="text"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Edition" />
+            <EditText
+                android:id="@+id/sellBookEdition"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="e.g. 1st Edition"
+                android:inputType="text"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Price" />
+            <EditText
+                android:id="@+id/sellBookPrice"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="e.g. R 350.00"
+                android:inputType="text"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginBottom="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnPostBook"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Post Book for Sale"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

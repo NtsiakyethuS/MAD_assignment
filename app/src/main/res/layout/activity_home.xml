@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/picture1" />
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:hint="Search books..."
+            android:inputType="text"
+            android:padding="8dp"
+            android:background="@drawable/hover_background" />
+
+        <ImageView
+            android:id="@+id/searchIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_search"
+            android:contentDescription="Search"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- Featured Textbooks Section -->
+
+    <!-- Bottom Navigation -->
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBar">
+
+        <LinearLayout
+            android:id="@+id/booksContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="10dp">
+
+            <!-- Dynamic book items will be added here -->
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:visibility="visible"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

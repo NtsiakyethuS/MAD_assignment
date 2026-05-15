@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">SharedtextView</string>
+    <string name="search_description">Search</string>
+    <string name="featured_textbooks">Featured Textbooks</string>
+
+    <string name="book1_title">Android Programming: The Big Nerd Ranch Guide</string>
+    <string name="book1_author">Bill Phillips, Chris Stewart, Kristin Marsicano</string>
+    <string name="book1_edition">4th Edition</string>
+    <string name="book1_price">R 450.00</string>
+
+    <string name="book2_title">Clean Code: A Handbook of Agile Software Craftsmanship</string>
+    <string name="book2_author">Robert C. Martin</string>
+    <string name="book2_edition">1st Edition</string>
+    <string name="book2_price">R 380.00</string>
+
+    <string name="book3_title">Effective Java</string>
+    <string name="book3_author">Joshua Bloch</string>
+    <string name="book3_edition">3rd Edition</string>
+    <string name="book3_price">R 420.00</string>
+
+    <string name="book4_title">The Pragmatic Programmer</string>
+    <string name="book4_author">Andrew Hunt, David Thomas</string>
+    <string name="book4_edition">20th Anniversary Edition</string>
+    <string name="book4_price">R 500.00</string>
+
+    <string name="book5_title">Kotlin in Action</string>
+    <string name="book5_author">Dmitry Jemerov, Svetlana Isakova</string>
+    <string name="book5_edition">1st Edition</string>
+    <string name="book5_price">R 350.00</string>
+    <string name="search_hint">Search by title, author, or edition...</string>
+    <string name="filter_by">Filter by:</string>
+    <string-array name="filter_options">
+        <item>All</item>
+        <item>Title</item>
+        <item>Author</item>
+        <item>Edition</item>
+        <item>Faculty</item>
+    </string-array>
+</resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnRegister">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="188dp"
+                android:layout_height="94dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/picture1" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Welcome To Textbook Connect"
+                android:textSize="30sp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="REGISTRATION"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="First Name"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/etLastName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Last Name"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etPhysicalAddress"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Physical Address"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etPostalAddress"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Postal Address"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etUniversity"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="University Enrolled In"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etCampus"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Campus"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etFaculty"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Your Faculty"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:background="@drawable/hover_background"
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Register"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
