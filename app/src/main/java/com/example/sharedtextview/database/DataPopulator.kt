@@ -70,8 +70,24 @@ object DataPopulator {
         withContext(Dispatchers.IO) {
             books.forEach { bookDao.insertBook(it) }
             
-            // Also ensure the admin user exists so detail view doesn't crash
             val userDao = db.userDao()
+            // Ensure the main admin user exists
+            if (userDao.getUserByEmail("root") == null) {
+                userDao.insertUser(User(
+                    email = "root",
+                    firstName = "System",
+                    lastName = "Administrator",
+                    physicalAddress = "Control Center",
+                    postalAddress = "Root Folder",
+                    university = "SharedtextView System",
+                    campus = "Global",
+                    faculty = "Management",
+                    password = "root.admin",
+                    isAdmin = true
+                ))
+            }
+
+            // Also ensure the old admin user exists for legacy books
             if (userDao.getUserByEmail(adminEmail) == null) {
                 userDao.insertUser(User(
                     email = adminEmail,
@@ -82,7 +98,8 @@ object DataPopulator {
                     university = "Shared University",
                     campus = "Main Campus",
                     faculty = "Administration",
-                    password = "adminpassword"
+                    password = "adminpassword",
+                    isAdmin = true
                 ))
             }
         }

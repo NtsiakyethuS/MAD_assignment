@@ -10,6 +10,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE email = :email")
     suspend fun getUserByEmail(email: String): User?
 
+    @Query("SELECT * FROM users")
+    suspend fun getAllUsers(): List<User>
+
     @Update
     suspend fun updateUser(user: User)
 
@@ -42,6 +45,30 @@ interface BookDao {
 
     @Query("SELECT * FROM books WHERE id = :id")
     suspend fun getBookById(id: Int): Book?
+
+    @Query("DELETE FROM books WHERE id = :id")
+    suspend fun deleteBook(id: Int)
+}
+
+@Dao
+interface AdminDao {
+    @Insert
+    suspend fun insertComplaint(complaint: Complaint)
+
+    @Query("SELECT * FROM complaints ORDER BY timestamp DESC")
+    suspend fun getAllComplaints(): List<Complaint>
+
+    @Update
+    suspend fun updateComplaint(complaint: Complaint)
+
+    @Insert
+    suspend fun insertFeedback(feedback: Feedback)
+
+    @Query("SELECT * FROM feedback ORDER BY timestamp DESC")
+    suspend fun getAllFeedback(): List<Feedback>
+
+    @Query("SELECT AVG(rating) FROM feedback")
+    suspend fun getAverageRating(): Float?
 }
 
 @Dao
@@ -54,6 +81,9 @@ interface ChatDao {
 
     @Query("SELECT * FROM chats WHERE buyerEmail = :email OR sellerEmail = :email ORDER BY timestamp DESC")
     suspend fun getChatsForUser(email: String): List<Chat>
+
+    @Query("SELECT * FROM chats ORDER BY timestamp DESC")
+    suspend fun getAllChats(): List<Chat>
 
     @Query("SELECT * FROM chats WHERE id = :chatId")
     suspend fun getChatById(chatId: Int): Chat?

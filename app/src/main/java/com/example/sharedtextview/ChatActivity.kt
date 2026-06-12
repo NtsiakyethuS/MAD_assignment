@@ -19,6 +19,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var scrollView: ScrollView
     private var chatId: Int = -1
     private var currentUserEmail: String? = null
+    private var isAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,7 @@ class ChatActivity : AppCompatActivity() {
 
         currentUserEmail = intent.getStringExtra("USER_EMAIL")
         chatId = intent.getIntExtra("CHAT_ID", -1)
+        isAdmin = intent.getBooleanExtra("IS_ADMIN", false)
 
         if (currentUserEmail == null || chatId == -1) {
             Toast.makeText(this, "Error loading chat", Toast.LENGTH_SHORT).show()
@@ -49,12 +51,20 @@ class ChatActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
 
+        if (isAdmin) {
+            findViewById<LinearLayout>(R.id.messageInputLayout).visibility = android.view.View.GONE
+        }
+
         lifecycleScope.launch {
             val chat = db.chatDao().getChatById(chatId)
             if (chat != null) {
-                val partnerEmail = if (chat.buyerEmail == currentUserEmail) chat.sellerEmail else chat.buyerEmail
-                val partner = db.userDao().getUserByEmail(partnerEmail)
-                tvPartnerName.text = "Chat with ${partner?.firstName ?: partnerEmail}"
+                if (isAdmin) {
+                    tvPartnerName.text = "Chat: ${chat.buyerName} vs ${chat.sellerName}"
+                } else {
+                    val partnerEmail = if (chat.buyerEmail == currentUserEmail) chat.sellerEmail else chat.buyerEmail
+                    val partner = db.userDao().getUserByEmail(partnerEmail)
+                    tvPartnerName.text = "Chat with ${partner?.firstName ?: partnerEmail}"
+                }
                 
                 val book = db.bookDao().getBookById(chat.bookId)
                 tvBookTitle.text = "About: ${book?.title ?: "Unknown Book"}"
@@ -81,11 +91,11 @@ class ChatActivity : AppCompatActivity() {
     private fun displayMessages(messages: List<Message>) {
         messagesContainer.removeAllViews()
         for (message in messages) {
-            val isSentByMe = message.senderEmail == currentUserEmail
+            val isSentByMe = !isAdmin && message.senderEmail == currentUserEmail
             val layoutId = if (isSentByMe) R.layout.item_message_sent else R.layout.item_message_received
             val view = layoutInflater.inflate(layoutId, messagesContainer, false)
             view.findViewById<TextView>(R.id.tvMessageContent).text = message.content
-            view.findViewById<TextView>(R.id.tvSenderName).text = message.senderName
+            view.findViewById<TextView>(R.id.tvSenderName).text = if (isAdmin) "${message.senderName}:" else message.senderName
             messagesContainer.addView(view)
         }
         scrollView.post { scrollView.fullScroll(android.view.View.FOCUS_DOWN) }

@@ -2,18 +2,25 @@ package com.example.sharedtextview
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RatingBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.sharedtextview.database.AppDatabase
 import com.example.sharedtextview.database.User
+import com.example.sharedtextview.database.Complaint
+import com.example.sharedtextview.database.Feedback
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
@@ -36,7 +43,6 @@ class ProfileActivity : AppCompatActivity() {
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             profileImage.setImageURI(it)
-            // In a real app, save the URI string to the database
         }
     }
 
@@ -67,6 +73,14 @@ class ProfileActivity : AppCompatActivity() {
         newPassword = findViewById(R.id.profileNewPassword)
         verifyPassword = findViewById(R.id.profileVerifyPassword)
 
+        val btnUpdate = findViewById<Button>(R.id.btnUpdateProfile)
+        val btnUpdatePassword = findViewById<Button>(R.id.btnUpdatePassword)
+        val btnDelete = findViewById<Button>(R.id.btnDeleteAccount)
+        val btnLogout = findViewById<Button>(R.id.btnLogout)
+        val btnComplaint = findViewById<Button>(R.id.btnSubmitComplaint)
+        val btnFeedback = findViewById<Button>(R.id.btnSubmitFeedback)
+        val btnAdmin = findViewById<Button>(R.id.btnAdminDashboard)
+
         val db = AppDatabase.getDatabase(this)
         
         // Load user data
@@ -82,25 +96,91 @@ class ProfileActivity : AppCompatActivity() {
                     university.setText(it.university)
                     campus.setText(it.campus)
                     faculty.setText(it.faculty)
-                    // profileImage.setImageURI(...) if URI was saved
+                    
+                    if (it.isAdmin || it.email == "root" || it.email == "admin@textbook.com") {
+                        btnAdmin.visibility = View.VISIBLE
+                    }
                 }
             }
+        }
+
+        btnAdmin.setOnClickListener {
+            val intent = Intent(this, AdminActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnComplaint.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Submit Complaint")
+            
+            val layout = LinearLayout(this)
+            layout.orientation = LinearLayout.VERTICAL
+            layout.setPadding(50, 40, 50, 10)
+            
+            val etSubject = EditText(this)
+            etSubject.hint = "Subject"
+            layout.addView(etSubject)
+            
+            val etMessage = EditText(this)
+            etMessage.hint = "Detail your complaint..."
+            etMessage.minLines = 3
+            layout.addView(etMessage)
+            
+            builder.setView(layout)
+            builder.setPositiveButton("Submit") { _, _ ->
+                val subject = etSubject.text.toString()
+                val message = etMessage.text.toString()
+                if (subject.isNotEmpty() && message.isNotEmpty()) {
+                    lifecycleScope.launch {
+                        db.adminDao().insertComplaint(Complaint(userEmail = currentUserEmail!!, subject = subject, message = message))
+                        Toast.makeText(this@ProfileActivity, "Complaint submitted", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            builder.setNegativeButton("Cancel", null)
+            builder.show()
+        }
+
+        btnFeedback.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Rate our App")
+            
+            val layout = LinearLayout(this)
+            layout.orientation = LinearLayout.VERTICAL
+            layout.setPadding(50, 40, 50, 10)
+            layout.gravity = android.view.Gravity.CENTER_HORIZONTAL
+            
+            val ratingBar = RatingBar(this)
+            ratingBar.numStars = 5
+            ratingBar.stepSize = 1.0f
+            layout.addView(ratingBar)
+            
+            val etComment = EditText(this)
+            etComment.hint = "Your feedback..."
+            layout.addView(etComment)
+            
+            builder.setView(layout)
+            builder.setPositiveButton("Submit") { _, _ ->
+                val rating = ratingBar.rating.toInt()
+                val comment = etComment.text.toString()
+                lifecycleScope.launch {
+                    db.adminDao().insertFeedback(Feedback(userEmail = currentUserEmail!!, rating = rating, comment = comment))
+                    Toast.makeText(this@ProfileActivity, "Thank you for your feedback!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            builder.setNegativeButton("Cancel", null)
+            builder.show()
         }
 
         btnChangePicture.setOnClickListener {
             selectImageLauncher.launch("image/*")
         }
 
-        val btnUpdate = findViewById<Button>(R.id.btnUpdateProfile)
-        val btnUpdatePassword = findViewById<Button>(R.id.btnUpdatePassword)
-        val btnDelete = findViewById<Button>(R.id.btnDeleteAccount)
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
-
         btnLogout.setOnClickListener {
             val prefs = getSharedPreferences("TextbookConnectPrefs", MODE_PRIVATE)
             prefs.edit().clear().apply()
             startActivity(Intent(this, MainActivity::class.java))
-            finishAffinity() // Close all activities in the stack
+            finishAffinity()
         }
 
         btnUpdate.setOnClickListener {

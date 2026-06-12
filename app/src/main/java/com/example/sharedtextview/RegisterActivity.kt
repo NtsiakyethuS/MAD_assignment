@@ -30,7 +30,27 @@ class RegisterActivity : AppCompatActivity() {
         val etLastName = findViewById<EditText>(R.id.etLastName)
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPhysicalAddress = findViewById<EditText>(R.id.etPhysicalAddress)
+        val cbSameAddress = findViewById<android.widget.CheckBox>(R.id.cbSameAddress)
         val etPostalAddress = findViewById<EditText>(R.id.etPostalAddress)
+        
+        cbSameAddress.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                etPostalAddress.setText(etPhysicalAddress.text.toString())
+                etPostalAddress.isEnabled = false
+            } else {
+                etPostalAddress.isEnabled = true
+            }
+        }
+
+        etPhysicalAddress.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (cbSameAddress.isChecked) {
+                    etPostalAddress.setText(s.toString())
+                }
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
         val etUniversity = findViewById<EditText>(R.id.etUniversity)
         val etCampus = findViewById<EditText>(R.id.etCampus)
         val etFaculty = findViewById<EditText>(R.id.etFaculty)

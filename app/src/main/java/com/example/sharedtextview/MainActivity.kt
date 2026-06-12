@@ -46,6 +46,11 @@ class MainActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
 
+        // Prepopulate admin and data
+        lifecycleScope.launch {
+            com.example.sharedtextview.database.DataPopulator.populateBooks(this@MainActivity)
+        }
+
         binding.button.setOnClickListener {
             val email = binding.editTextTextEmailAddress.text.toString().trim()
             val password = binding.editTextTextPassword.text.toString().trim()
@@ -56,23 +61,24 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val user = db.userDao().getUserByEmail(email)
                     if (user != null) {
-                        // In a real app, we'd check the password here. 
-                        // For this prototype, we'll assume email exists = success.
-                        
-                        if (binding.cbRememberMe.isChecked) {
-                            prefs.edit().apply {
-                                putBoolean(KEY_REMEMBER_ME, true)
-                                putString(KEY_EMAIL, email)
-                                apply()
+                        if (user.password == password) {
+                            if (binding.cbRememberMe.isChecked) {
+                                prefs.edit().apply {
+                                    putBoolean(KEY_REMEMBER_ME, true)
+                                    putString(KEY_EMAIL, email)
+                                    apply()
+                                }
+                            } else {
+                                prefs.edit().clear().apply()
                             }
-                        } else {
-                            prefs.edit().clear().apply()
-                        }
 
-                        startActivity(Intent(this@MainActivity, HomeActivity::class.java).apply {
-                            putExtra("USER_EMAIL", email)
-                        })
-                        finish()
+                            startActivity(Intent(this@MainActivity, HomeActivity::class.java).apply {
+                                putExtra("USER_EMAIL", email)
+                            })
+                            finish()
+                        } else {
+                            Toast.makeText(this@MainActivity, "you hav inputed the wrong password", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Toast.makeText(this@MainActivity, "User not found. Please register.", Toast.LENGTH_SHORT).show()
                     }
@@ -82,6 +88,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.button2.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        binding.textView4.setOnClickListener {
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
         }
     }
 }

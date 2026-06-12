@@ -181,7 +181,31 @@
                 android:inputType="textPassword"
                 android:background="@drawable/hover_background"
                 android:padding="8dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Support &amp; Feedback"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btnSubmitComplaint"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit a Complaint"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btnSubmitFeedback"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rate App &amp; Feedback"
+                android:layout_marginBottom="24dp"/>
 
         </LinearLayout>
     </ScrollView>
@@ -222,7 +246,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete Account"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="#F44336" />
+
+        <Button
+            android:id="@+id/btnAdminDashboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Admin Dashboard"
+            android:visibility="gone"
+            android:backgroundTint="#4CAF50" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

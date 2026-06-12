@@ -14,7 +14,8 @@ data class User(
     val campus: String,
     val faculty: String,
     val profileImageUri: String? = null,
-    val password: String
+    val password: String,
+    val isAdmin: Boolean = false
 )
 
 @Entity(tableName = "books")
@@ -48,5 +49,24 @@ data class Message(
     val senderEmail: String,
     val senderName: String = "",
     val content: String,
+    val timestamp: Long = System.currentTimeMillis()
+)
+
+@Entity(tableName = "complaints")
+data class Complaint(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val userEmail: String,
+    val subject: String,
+    val message: String,
+    val timestamp: Long = System.currentTimeMillis(),
+    val isResolved: Boolean = false
+)
+
+@Entity(tableName = "feedback")
+data class Feedback(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val userEmail: String,
+    val rating: Int, // 1 to 5
+    val comment: String,
     val timestamp: Long = System.currentTimeMillis()
 )
