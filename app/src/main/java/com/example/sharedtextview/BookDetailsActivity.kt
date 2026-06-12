@@ -1,3 +1,21 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize Book Details Screen and retrieve the Book ID from the intent.
+ * 2. Fetch Data:
+ *    - Query database for book details (Title, Price, Image, etc.).
+ *    - Query database for the seller's profile information.
+ * 3. Populate UI:
+ *    - Set the book information in the view fields.
+ *    - Display the seller's name, university, and contact email.
+ * 4. Contact Seller (Email):
+ *    - When "Contact" is clicked, open an external email app.
+ *    - Pre-fill the seller's email and a subject line about the book.
+ * 5. In-App Chat:
+ *    - When "Chat" is clicked, check if a conversation already exists between the buyer and seller for this book.
+ *    - If not, create a new Chat entry in the database.
+ *    - Navigate to the Chat Screen with the Chat ID.
+ */
+
 package com.example.sharedtextview
 
 import android.content.Intent
@@ -15,8 +33,14 @@ import androidx.lifecycle.lifecycleScope
 import com.example.sharedtextview.database.AppDatabase
 import kotlinx.coroutines.launch
 
+/**
+ * BookDetailsActivity displays complete information about a specific textbook and its seller.
+ */
 class BookDetailsActivity : AppCompatActivity() {
 
+    /**
+     * Initializes UI and loads data based on the provided Book ID.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -52,6 +76,7 @@ class BookDetailsActivity : AppCompatActivity() {
 
         val currentUserEmail = intent.getStringExtra("USER_EMAIL")
 
+        // PSEUDO: Asynchronously load book and seller details from database
         lifecycleScope.launch {
             val book = db.bookDao().getBookById(bookId)
             if (book != null) {
@@ -68,7 +93,7 @@ class BookDetailsActivity : AppCompatActivity() {
                     }
                 }
 
-                // Fetch seller details
+                // PSEUDO: Fetch the profile of the user who listed the book
                 val seller = db.userDao().getUserByEmail(book.sellerEmail)
                 if (seller != null) {
                     tvSellerName.text = "Seller: ${seller.firstName} ${seller.lastName}"
@@ -76,6 +101,7 @@ class BookDetailsActivity : AppCompatActivity() {
                     tvSellerCampus.text = "Campus: ${seller.campus}"
                     tvSellerEmail.text = "Email: ${seller.email}"
 
+                    // PSEUDO: Handle external email contact intent
                     btnContact.setOnClickListener {
                         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                             data = Uri.parse("mailto:")
@@ -90,6 +116,7 @@ class BookDetailsActivity : AppCompatActivity() {
                         }
                     }
 
+                    // PSEUDO: Handle in-app chat initiation
                     btnChat.setOnClickListener {
                         if (currentUserEmail == null) {
                             Toast.makeText(this@BookDetailsActivity, "Please log in to chat", Toast.LENGTH_SHORT).show()
@@ -101,6 +128,7 @@ class BookDetailsActivity : AppCompatActivity() {
                         }
 
                         lifecycleScope.launch {
+                            // PSEUDO: Check if a chat session already exists to avoid duplicates
                             var chat = db.chatDao().getChatBetweenUsers(currentUserEmail, seller.email, book.id)
                             if (chat == null) {
                                 val buyer = db.userDao().getUserByEmail(currentUserEmail)
@@ -115,6 +143,7 @@ class BookDetailsActivity : AppCompatActivity() {
                                 chat = db.chatDao().getChatById(id.toInt())
                             }
                             
+                            // PSEUDO: Transition to the chat interface
                             chat?.let {
                                 val intent = Intent(this@BookDetailsActivity, ChatActivity::class.java)
                                 intent.putExtra("CHAT_ID", it.id)

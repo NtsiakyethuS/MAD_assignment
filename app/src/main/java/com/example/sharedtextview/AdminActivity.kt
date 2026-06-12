@@ -1,3 +1,23 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize Admin Dashboard.
+ * 2. Navigation:
+ *    - Buttons to toggle between Users, Books, Complaints, Chats, and Stats.
+ * 3. Manage Users:
+ *    - Fetch all users from database.
+ *    - Long-press a user to trigger a deletion dialog.
+ * 4. Manage Books:
+ *    - Fetch all book listings.
+ *    - Long-press a book to delete it from the marketplace.
+ * 5. View Complaints:
+ *    - List all support tickets/complaints sent by users.
+ * 6. Monitor Chats:
+ *    - List all active conversations between users.
+ *    - Click a chat to view the message history in read-only mode.
+ * 7. System Stats:
+ *    - Calculate total users, total books, and average feedback ratings.
+ */
+
 package com.example.sharedtextview
 
 import android.os.Bundle
@@ -23,12 +43,18 @@ import com.example.sharedtextview.database.Chat
 import android.content.Intent
 import kotlinx.coroutines.launch
 
+/**
+ * AdminActivity provides the interface for system administrators to manage data.
+ */
 class AdminActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var statsLayout: LinearLayout
     private lateinit var db: AppDatabase
 
+    /**
+     * Sets up the dashboard and default view.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -46,15 +72,19 @@ class AdminActivity : AppCompatActivity() {
         statsLayout = findViewById(R.id.statsLayout)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // PSEUDO: Set listeners for each management category
         findViewById<Button>(R.id.btnViewUsers).setOnClickListener { showUsers() }
         findViewById<Button>(R.id.btnViewBooks).setOnClickListener { showBooks() }
         findViewById<Button>(R.id.btnViewComplaints).setOnClickListener { showComplaints() }
         findViewById<Button>(R.id.btnViewChats).setOnClickListener { showChats() }
         findViewById<Button>(R.id.btnViewStats).setOnClickListener { showStats() }
 
-        showUsers() // Default view
+        showUsers() // PSEUDO: Show users by default
     }
 
+    /**
+     * Displays a list of all registered users with management options.
+     */
     private fun showUsers() {
         recyclerView.visibility = View.VISIBLE
         statsLayout.visibility = View.GONE
@@ -72,6 +102,7 @@ class AdminActivity : AppCompatActivity() {
                     text1.text = "${user.firstName} ${user.lastName} (${user.email})"
                     text2.text = "Password: ${user.password} | Admin: ${user.isAdmin}"
                     
+                    // PSEUDO: Enable user deletion on long click
                     holder.itemView.setOnLongClickListener {
                         AlertDialog.Builder(this@AdminActivity)
                             .setTitle("Manage User")
@@ -79,7 +110,7 @@ class AdminActivity : AppCompatActivity() {
                             .setPositiveButton("Delete") { _, _ ->
                                 lifecycleScope.launch {
                                     db.userDao().deleteUser(user.email)
-                                    showUsers()
+                                    showUsers() // Refresh list
                                 }
                             }
                             .setNegativeButton("Cancel", null)
@@ -92,6 +123,9 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Displays a list of all listed books with deletion capability.
+     */
     private fun showBooks() {
         recyclerView.visibility = View.VISIBLE
         statsLayout.visibility = View.GONE
@@ -109,6 +143,7 @@ class AdminActivity : AppCompatActivity() {
                     text1.text = "${book.title} - ${book.author}"
                     text2.text = "Price: ${book.price} | Seller: ${book.sellerEmail}"
 
+                    // PSEUDO: Enable book deletion on long click
                     holder.itemView.setOnLongClickListener {
                         AlertDialog.Builder(this@AdminActivity)
                             .setTitle("Manage Book")
@@ -116,7 +151,7 @@ class AdminActivity : AppCompatActivity() {
                             .setPositiveButton("Delete") { _, _ ->
                                 lifecycleScope.launch {
                                     db.bookDao().deleteBook(book.id)
-                                    showBooks()
+                                    showBooks() // Refresh list
                                 }
                             }
                             .setNegativeButton("Cancel", null)
@@ -129,6 +164,9 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Lists all complaints submitted via the support system.
+     */
     private fun showComplaints() {
         recyclerView.visibility = View.VISIBLE
         statsLayout.visibility = View.GONE
@@ -151,6 +189,9 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Lists all user-to-user and user-to-admin chats.
+     */
     private fun showChats() {
         recyclerView.visibility = View.VISIBLE
         statsLayout.visibility = View.GONE
@@ -168,11 +209,12 @@ class AdminActivity : AppCompatActivity() {
                     text1.text = "${chat.buyerName} & ${chat.sellerName}"
                     text2.text = "Last: ${chat.lastMessage}"
 
+                    // PSEUDO: Allow admin to view the conversation
                     holder.itemView.setOnClickListener {
                         val intent = Intent(this@AdminActivity, ChatActivity::class.java)
                         intent.putExtra("CHAT_ID", chat.id)
-                        intent.putExtra("USER_EMAIL", "ADMIN") // Signal it's an admin view
-                        intent.putExtra("IS_ADMIN", true)
+                        intent.putExtra("USER_EMAIL", "ADMIN")
+                        intent.putExtra("IS_ADMIN", true) // Open in read-only mode
                         startActivity(intent)
                     }
                 }
@@ -181,10 +223,14 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Aggregates and displays system metrics.
+     */
     private fun showStats() {
         recyclerView.visibility = View.GONE
         statsLayout.visibility = View.VISIBLE
         lifecycleScope.launch {
+            // PSEUDO: Fetch counts and averages from various DAOs
             val usersCount = db.userDao().getAllUsers().size
             val booksCount = db.bookDao().getAllBooks().size
             val avgRating = db.adminDao().getAverageRating() ?: 0f

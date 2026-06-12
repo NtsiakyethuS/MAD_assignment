@@ -1,3 +1,20 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize the Login Activity and check if "Remember Me" is active.
+ * 2. If "Remember Me" is true and a saved email exists, skip login and go to Home.
+ * 3. Pre-populate the database with initial book data and admin users if empty.
+ * 4. On Login Click:
+ *    a. Get email and password from input fields.
+ *    b. Validate inputs are not empty.
+ *    c. Search database for the user by email.
+ *    d. If user exists and password matches:
+ *       - Save login status if "Remember Me" is checked.
+ *       - Navigate to Home Screen.
+ *    e. If password fails or user is missing, show an error message.
+ * 5. On Register Click: Open Registration Screen.
+ * 6. On Forgot Password Click: Open Password Recovery Screen.
+ */
+
 package com.example.sharedtextview
 
 import android.content.Intent
@@ -12,6 +29,9 @@ import com.example.sharedtextview.database.AppDatabase
 import com.example.sharedtextview.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
+/**
+ * MainActivity handles the login process and application entry point.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -19,18 +39,23 @@ class MainActivity : AppCompatActivity() {
     private val KEY_REMEMBER_ME = "remember_me"
     private val KEY_EMAIL = "saved_email"
 
+    /**
+     * Called when the activity is first created.
+     * Sets up UI, auto-login check, and button listeners.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // PSEUDO: Read shared preferences for auto-login
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val isRemembered = prefs.getBoolean(KEY_REMEMBER_ME, false)
         val savedEmail = prefs.getString(KEY_EMAIL, null)
 
+        // PSEUDO: If auto-login is valid, move to Home Activity immediately
         if (isRemembered && savedEmail != null) {
-            // Auto-login
             startActivity(Intent(this, HomeActivity::class.java).apply {
                 putExtra("USER_EMAIL", savedEmail)
             })
@@ -46,11 +71,12 @@ class MainActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
 
-        // Prepopulate admin and data
+        // PSEUDO: Launch background task to ensure database has initial data
         lifecycleScope.launch {
             com.example.sharedtextview.database.DataPopulator.populateBooks(this@MainActivity)
         }
 
+        // PSEUDO: Handle Login Button Interaction
         binding.button.setOnClickListener {
             val email = binding.editTextTextEmailAddress.text.toString().trim()
             val password = binding.editTextTextPassword.text.toString().trim()
@@ -59,9 +85,12 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_SHORT).show()
             } else {
                 lifecycleScope.launch {
+                    // PSEUDO: Query database for the user
                     val user = db.userDao().getUserByEmail(email)
                     if (user != null) {
+                        // PSEUDO: Check if password is correct
                         if (user.password == password) {
+                            // PSEUDO: Handle "Remember Me" logic
                             if (binding.cbRememberMe.isChecked) {
                                 prefs.edit().apply {
                                     putBoolean(KEY_REMEMBER_ME, true)
@@ -72,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                                 prefs.edit().clear().apply()
                             }
 
+                            // PSEUDO: Transition to Home Activity
                             startActivity(Intent(this@MainActivity, HomeActivity::class.java).apply {
                                 putExtra("USER_EMAIL", email)
                             })
@@ -86,10 +116,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // PSEUDO: Navigate to Registration
         binding.button2.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
+        // PSEUDO: Navigate to Forgot Password
         binding.textView4.setOnClickListener {
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
         }

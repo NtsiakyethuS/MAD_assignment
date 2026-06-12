@@ -1,3 +1,17 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Setup the Home Screen and retrieve the current user's email.
+ * 2. Ensure initial data exists in the database.
+ * 3. Load all books from the database and display them in a list.
+ * 4. Setup Search:
+ *    - As the user types, query the database for matching titles/authors.
+ *    - Update the display list with search results.
+ * 5. Display Books:
+ *    - For each book, create a visual item (Title, Author, Price, Cover).
+ *    - Handle clicks on book items to show detailed information.
+ * 6. Bottom Navigation: Handle switching between Home, Search, Sell, and Profile screens.
+ */
+
 package com.example.sharedtextview
 
 import android.content.Intent
@@ -21,10 +35,16 @@ import com.example.sharedtextview.R.id.home_root
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
+/**
+ * HomeActivity displays the main dashboard with a list of available books.
+ */
 class HomeActivity : AppCompatActivity() {
     
     private var currentUserEmail: String? = null
 
+    /**
+     * Initializes the activity, sets up the search bar and navigation.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
         
         currentUserEmail = intent.getStringExtra("USER_EMAIL")
 
-        // Apply system bar insets to the root layout
+        // PSEUDO: Adjust layout padding for status bars
         setOnApplyWindowInsetsListener(findViewById(home_root)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -44,23 +64,23 @@ class HomeActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
 
-        // Prepopulate data
+        // PSEUDO: Load initial book data in the background
         lifecycleScope.launch {
             com.example.sharedtextview.database.DataPopulator.populateBooks(this@HomeActivity)
-            // Load books from database
             loadBooks(db)
         }
 
-        // Search when text changes
+        // PSEUDO: Real-time search update as user types
         searchEditText.addTextChangedListener { text ->
             performSearch(db, text.toString())
         }
 
-        // Search when icon is clicked
+        // PSEUDO: Search button click handler
         searchIcon.setOnClickListener {
             performSearch(db, searchEditText.text.toString())
         }
 
+        // PSEUDO: Setup Bottom Navigation Bar interactions
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.navigation_home
         bottomNav.setOnItemSelectedListener { item ->
@@ -89,6 +109,9 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Retrieves all books from the database and updates the UI.
+     */
     private fun loadBooks(db: AppDatabase) {
         lifecycleScope.launch {
             val books = db.bookDao().getAllBooks()
@@ -96,6 +119,9 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Queries the database for books matching the search string.
+     */
     private fun performSearch(db: AppDatabase, query: String) {
         lifecycleScope.launch {
             val books = if (query.isEmpty()) {
@@ -107,11 +133,15 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Dynamically populates the linear layout with book items.
+     */
     private fun displayBooks(books: List<Book>) {
         val booksContainer = findViewById<LinearLayout>(R.id.booksContainer)
         booksContainer.removeAllViews()
 
         for (book in books) {
+            // PSEUDO: Inflate the book item layout and populate it with data
             val bookView = layoutInflater.inflate(R.layout.item_book_home, booksContainer, false)
             
             val ivCover = bookView.findViewById<ImageView>(R.id.ivBookCover)
@@ -125,6 +155,7 @@ class HomeActivity : AppCompatActivity() {
             tvEdition.text = book.edition
             tvPrice.text = book.price
 
+            // PSEUDO: Set the book image, fallback to placeholder if null
             if (book.imageUri != null) {
                 try {
                     ivCover.setImageURI(android.net.Uri.parse(book.imageUri))
@@ -135,6 +166,7 @@ class HomeActivity : AppCompatActivity() {
                 ivCover.setImageResource(R.drawable.picture1)
             }
 
+            // PSEUDO: Clicking a book opens its details page
             bookView.setOnClickListener {
                 val intent = Intent(this, BookDetailsActivity::class.java)
                 intent.putExtra("BOOK_ID", book.id)

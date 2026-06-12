@@ -1,3 +1,22 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize Profile Screen and load the current user's data from the database.
+ * 2. Update Profile:
+ *    - Collect modified fields (Name, Address, School info).
+ *    - Update the user record in the database.
+ * 3. Security (Password Update):
+ *    - Compare "New Password" and "Verify Password" fields.
+ *    - If they match, update the user's password in the database.
+ * 4. User Interaction (Feedback & Complaints):
+ *    - Show dialogs to collect ratings or complaint details.
+ *    - Save these entries into the admin database tables.
+ * 5. Logout & Account Management:
+ *    - Clear "Remember Me" preferences on logout.
+ *    - Allow permanent account deletion (removes user from database).
+ * 6. Admin Access:
+ *    - If the user has admin rights, show the "Admin Dashboard" button.
+ */
+
 package com.example.sharedtextview
 
 import android.content.Intent
@@ -24,6 +43,9 @@ import com.example.sharedtextview.database.Feedback
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
+/**
+ * ProfileActivity manages user account details, settings, and support requests.
+ */
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var profileImage: ImageView
@@ -40,12 +62,16 @@ class ProfileActivity : AppCompatActivity() {
     
     private var currentUserEmail: String? = null
 
+    // PSEUDO: Launcher for updating profile picture
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             profileImage.setImageURI(it)
         }
     }
 
+    /**
+     * Initializes UI and loads current profile data.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -83,7 +109,7 @@ class ProfileActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
         
-        // Load user data
+        // PSEUDO: Fetch user info from database and fill text fields
         currentUserEmail?.let { userEmail ->
             lifecycleScope.launch {
                 val user = db.userDao().getUserByEmail(userEmail)
@@ -97,6 +123,7 @@ class ProfileActivity : AppCompatActivity() {
                     campus.setText(it.campus)
                     faculty.setText(it.faculty)
                     
+                    // PSEUDO: Show Admin Dashboard button if user is an administrator
                     if (it.isAdmin || it.email == "root" || it.email == "admin@textbook.com") {
                         btnAdmin.visibility = View.VISIBLE
                     }
@@ -109,6 +136,7 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // PSEUDO: Complaint Dialog Logic
         btnComplaint.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Submit Complaint")
@@ -141,6 +169,7 @@ class ProfileActivity : AppCompatActivity() {
             builder.show()
         }
 
+        // PSEUDO: Feedback/Rating Dialog Logic
         btnFeedback.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Rate our App")
@@ -176,6 +205,7 @@ class ProfileActivity : AppCompatActivity() {
             selectImageLauncher.launch("image/*")
         }
 
+        // PSEUDO: Clear session and return to Login screen
         btnLogout.setOnClickListener {
             val prefs = getSharedPreferences("TextbookConnectPrefs", MODE_PRIVATE)
             prefs.edit().clear().apply()
@@ -183,6 +213,7 @@ class ProfileActivity : AppCompatActivity() {
             finishAffinity()
         }
 
+        // PSEUDO: Collect UI data and update user profile in DB
         btnUpdate.setOnClickListener {
             lifecycleScope.launch {
                 val existingUser = currentUserEmail?.let { db.userDao().getUserByEmail(it) }
@@ -202,6 +233,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
+        // PSEUDO: Validate and update user password
         btnUpdatePassword.setOnClickListener {
             val pass = newPassword.text.toString()
             val verify = verifyPassword.text.toString()
@@ -228,6 +260,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
+        // PSEUDO: Permanent account deletion
         btnDelete.setOnClickListener {
             currentUserEmail?.let {
                 lifecycleScope.launch {
@@ -239,7 +272,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        // Setup Navigation Bar
+        // PSEUDO: Navigation interactions
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.navigation_profile
         bottomNav.setOnItemSelectedListener { item ->

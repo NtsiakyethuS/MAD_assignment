@@ -1,22 +1,46 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize Database Seeding Process.
+ * 2. Check if the database already contains books.
+ *    - If there are already 5 or more books, skip population to avoid duplicates.
+ * 3. Define Lists of Initial Books for different faculties:
+ *    - Education (Titles, Authors, Editions, Prices).
+ *    - Law (Titles, Authors, Editions, Prices).
+ *    - Information Technology (Titles, Authors, Editions, Prices).
+ * 4. Create and Insert Book Objects:
+ *    - Loop through each list and construct Book objects.
+ *    - Save these to the Book table in the database.
+ * 5. Ensure Administrative Accounts:
+ *    - Check if a 'root' admin user exists. If not, create one.
+ *    - Check if the default support admin exists. If not, create one.
+ */
+
 package com.example.sharedtextview.database
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * DataPopulator is responsible for seeding the database with initial data on first run.
+ */
 object DataPopulator {
+
+    /**
+     * Fills the database with a selection of books and default admin accounts.
+     */
     suspend fun populateBooks(context: Context) {
         val db = AppDatabase.getDatabase(context)
         val bookDao = db.bookDao()
         
-        // Check if already populated
+        // PSEUDO: Avoid re-populating if data already exists
         val existingBooks = withContext(Dispatchers.IO) { bookDao.getAllBooks() }
-        if (existingBooks.size > 5) return // Already populated with more than just a few books
+        if (existingBooks.size > 5) return 
 
         val books = mutableListOf<Book>()
         val adminEmail = "admin@textbookconnect.com"
 
-        // Education
+        // PSEUDO: Define sample books for Education faculty
         val educationBooks = listOf(
             "Teaching in the 21st Century" to "Dr. Sarah Miller",
             "Educational Psychology" to "Prof. Robert James",
@@ -33,7 +57,7 @@ object DataPopulator {
             books.add(Book(title = title, author = author, edition = "${i % 3 + 1}st Edition", price = "R ${300 + i * 10}", sellerEmail = adminEmail, faculty = "Education"))
         }
 
-        // Law
+        // PSEUDO: Define sample books for Law faculty
         val lawBooks = listOf(
             "Introduction to Law" to "Prof. Michael Cohen",
             "Constitutional Law" to "Dr. Jessica Lee",
@@ -50,7 +74,7 @@ object DataPopulator {
             books.add(Book(title = title, author = author, edition = "${i % 2 + 2}nd Edition", price = "R ${450 + i * 20}", sellerEmail = adminEmail, faculty = "Law"))
         }
 
-        // Information Technology
+        // PSEUDO: Define sample books for IT faculty
         val itBooks = listOf(
             "Introduction to Programming" to "Tony Gaddis",
             "Data Structures and Algorithms" to "Robert Lafore",
@@ -67,11 +91,13 @@ object DataPopulator {
             books.add(Book(title = title, author = author, edition = "${i % 4 + 1}th Edition", price = "R ${500 + i * 15}", sellerEmail = adminEmail, faculty = "Information Technology"))
         }
 
+        // PSEUDO: Perform database insertions on a background thread
         withContext(Dispatchers.IO) {
             books.forEach { bookDao.insertBook(it) }
             
             val userDao = db.userDao()
-            // Ensure the main admin user exists
+            
+            // PSEUDO: Create the system root administrator if missing
             if (userDao.getUserByEmail("root") == null) {
                 userDao.insertUser(User(
                     email = "root",
@@ -87,7 +113,7 @@ object DataPopulator {
                 ))
             }
 
-            // Also ensure the old admin user exists for legacy books
+            // PSEUDO: Create the default support administrator if missing
             if (userDao.getUserByEmail(adminEmail) == null) {
                 userDao.insertUser(User(
                     email = adminEmail,

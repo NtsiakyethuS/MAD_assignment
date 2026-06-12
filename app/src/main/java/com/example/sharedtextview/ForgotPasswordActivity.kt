@@ -1,3 +1,17 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize Password Recovery Screen.
+ * 2. Collect the user's email address from the input field.
+ * 3. Search Database:
+ *    - Check if the provided email belongs to a registered user.
+ * 4. Generate Temporary Password:
+ *    - If the user exists, generate a random 8-character string (temp password).
+ *    - Update the user's account in the database with this new temporary password.
+ * 5. Notify User:
+ *    - Show a dialog box displaying the temporary password.
+ *    - Instruct the user to log in and change their password in the profile section.
+ */
+
 package com.example.sharedtextview
 
 import android.os.Bundle
@@ -14,7 +28,14 @@ import com.example.sharedtextview.database.AppDatabase
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+/**
+ * ForgotPasswordActivity handles the password reset flow for users who lost access.
+ */
 class ForgotPasswordActivity : AppCompatActivity() {
+
+    /**
+     * Sets up UI and handles the reset request logic.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,6 +53,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
 
+        // PSEUDO: Handle the reset password button click
         btnReset.setOnClickListener {
             val email = etEmail.text.toString().trim()
 
@@ -41,17 +63,17 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
 
             lifecycleScope.launch {
+                // PSEUDO: Verify user email exists in the system
                 val user = db.userDao().getUserByEmail(email)
                 if (user != null) {
-                    // Generate a temporary password (first 8 characters of a UUID)
+                    // PSEUDO: Generate a temporary random password
                     val tempPassword = UUID.randomUUID().toString().substring(0, 8)
                     
-                    // Update user in database
+                    // PSEUDO: Overwrite the old password with the temporary one in the database
                     val updatedUser = user.copy(password = tempPassword)
                     db.userDao().updateUser(updatedUser)
 
-                    // In a real app, you'd send an email here. 
-                    // For this assignment, we show it in a Toast and a Dialog.
+                    // PSEUDO: Show the temporary password to the user via a dialog
                     android.app.AlertDialog.Builder(this@ForgotPasswordActivity)
                         .setTitle("Password Reset Successful")
                         .setMessage("A temporary password has been generated for you:\n\n$tempPassword\n\nPlease use this to log in and change your password in your profile.")
@@ -63,6 +85,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
         }
 
+        // PSEUDO: Allow user to go back to login screen
         tvBack.setOnClickListener {
             finish()
         }

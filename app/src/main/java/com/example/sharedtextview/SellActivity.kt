@@ -1,3 +1,19 @@
+/* 
+ * PSEUDO-CODE LOGIC:
+ * 1. Initialize the Sell/Post Book Screen and retrieve the current user's email.
+ * 2. Image Selection:
+ *    - Open the system gallery when "Upload Picture" is clicked.
+ *    - Store the URI of the selected image and display it in the preview.
+ * 3. Book Posting:
+ *    - Collect details: Title, Author, Edition, and Price.
+ *    - Validate that all fields are filled.
+ *    - Create a new Book entry.
+ *    - Automatically assign the book to the user's faculty (fetched from their profile).
+ *    - Save the book listing to the database.
+ * 4. Completion: Show a success message and close the screen.
+ * 5. Navigation: Allow switching back to Home, Search, or Profile.
+ */
+
 package com.example.sharedtextview
 
 import android.content.Intent
@@ -17,6 +33,9 @@ import com.example.sharedtextview.database.Book
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
+/**
+ * SellActivity allows users to list their textbooks for sale in the marketplace.
+ */
 class SellActivity : AppCompatActivity() {
 
     private lateinit var bookImage: ImageView
@@ -27,6 +46,7 @@ class SellActivity : AppCompatActivity() {
     private var selectedImageUri: String? = null
     private var currentUserEmail: String? = null
 
+    // PSEUDO: Launcher for image selection from the phone's gallery
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             bookImage.setImageURI(it)
@@ -34,6 +54,9 @@ class SellActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up the UI for inputting book data and handles image selection.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -58,20 +81,24 @@ class SellActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
 
+        // PSEUDO: Trigger gallery intent
         btnUploadPicture.setOnClickListener {
             selectImageLauncher.launch("image/*")
         }
 
+        // PSEUDO: Collect inputs and save the new book listing
         btnPost.setOnClickListener {
             val title = bookTitle.text.toString().trim()
             val author = bookAuthor.text.toString().trim()
             val edition = bookEdition.text.toString().trim()
             val price = bookPrice.text.toString().trim()
 
+            // PSEUDO: Ensure no empty fields
             if (title.isEmpty() || author.isEmpty() || edition.isEmpty() || price.isEmpty() || currentUserEmail == null) {
                 Toast.makeText(this, "Please fill in all book details", Toast.LENGTH_SHORT).show()
             } else {
                 lifecycleScope.launch {
+                    // PSEUDO: Fetch user's faculty to categorize the book
                     val user = db.userDao().getUserByEmail(currentUserEmail!!)
                     val newBook = Book(
                         title = title,
@@ -82,6 +109,7 @@ class SellActivity : AppCompatActivity() {
                         sellerEmail = currentUserEmail!!,
                         faculty = user?.faculty ?: "General"
                     )
+                    // PSEUDO: Insert into database and finish
                     db.bookDao().insertBook(newBook)
                     Toast.makeText(this@SellActivity, "Book Posted Successfully!", Toast.LENGTH_SHORT).show()
                     finish()
@@ -89,7 +117,7 @@ class SellActivity : AppCompatActivity() {
             }
         }
 
-        // Setup Navigation Bar
+        // PSEUDO: Standard navigation logic
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.navigation_sell
         bottomNav.setOnItemSelectedListener { item ->
